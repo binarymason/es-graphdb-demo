@@ -1,5 +1,19 @@
 version: "2"
 services:
+  web:
+    build:
+      context: app
+      dockerfile: Dockerfile
+    container_name: web_container
+    volumes:
+      - ./bin/wait.sh:/extension/wait.sh
+    environment:
+      - PORT=9000
+      - EXTENSION_SCRIPT=/extension/wait.sh
+    links:
+      - elasticsearch
+    ports:
+      - "9000:9000"
   neo4j:
     restart: always
     image: neo4j:3.1.4
@@ -24,7 +38,6 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.4.2
     container_name: elasticsearch_container
     volumes:
-      - ./esdata:/data
       - ./elastic/conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     environment:
       - http.host=0.0.0.0
