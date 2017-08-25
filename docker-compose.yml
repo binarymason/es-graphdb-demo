@@ -7,6 +7,7 @@ services:
     volumes:
       - ./neo4j/conf/neo4j.conf:/conf/neo4j.conf
       - ./neo4j/plugins:/plugins
+      - ./neo4j/data/import:/data/import
       - ./bin/wait.sh:/extension/wait.sh
     environment:
       - elasticsearch="http://elasticsearch_container"
