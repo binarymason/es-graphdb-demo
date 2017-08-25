@@ -2,36 +2,30 @@ version: "2"
 services:
   neo4j:
     restart: always
-    image: neo4j:3.2.1
+    image: neo4j:3.1.4
     container_name: neo4j_container
     volumes:
-      - ./neo4j/conf:/conf
+      - ./neo4j/conf/neo4j.conf:/conf/neo4j.conf
       - ./neo4j/plugins:/plugins
-      - ./neo4j/data/import:/data/import
-      - ./neo4j/extension:/var/lib/neo4j/extension
+      - ./bin/wait.sh:/extension/wait.sh
     environment:
-      - NEO4J_AUTH=none
       - elasticsearch="http://elasticsearch_container"
+      - NEO4J_AUTH=none
+      - EXTENSION_SCRIPT=/extension/wait.sh
     ports:
       - "7687:7687"
       - "7474:7474"
-    networks:
-      - demo_network
+    links:
+      - elasticsearch
   elasticsearch:
     restart: always
     image: docker.elastic.co/elasticsearch/elasticsearch:5.4.2
     container_name: elasticsearch_container
     volumes:
       - ./esdata:/data
-      - ./elastic/plugins:/plugins
       - ./elastic/conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     environment:
-      - neo4j="http://neo4j_container"
       - http.host=0.0.0.0
+      - neo4j="http://neo4j_container"
     ports:
       - "9200:9200"
-    networks:
-      - demo_network
-networks:
-  demo_network:
-    driver: bridge
