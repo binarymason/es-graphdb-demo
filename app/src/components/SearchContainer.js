@@ -2,7 +2,6 @@ import React, {PropTypes, Component} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as searchActions from '../actions/search-actions';
-import SearchSuggestionList from './SearchSuggestionList';
 import SearchInput from './SearchInput';
 
 class SearchContainer extends Component {
@@ -17,8 +16,14 @@ class SearchContainer extends Component {
   render() {
     return (
       <div>
-        <SearchInput fetchSearchSuggestions={this.props.actions.fetchSearchSuggestions} />
-        <SearchSuggestionList suggestions={this.props.suggestions} />
+        <SearchInput
+          fetchSearchSuggestions={this.props.actions.fetchSearchSuggestions}
+          browseSearchSuggestion={this.props.actions.browseSearchSuggestion}
+          selectSearchSuggestion={this.props.actions.selectSearchSuggestion}
+          suggestions={this.props.suggestions}
+          suggestionBrowsingIndex={this.props.suggestionBrowsingIndex}
+          query={this.props.query}
+        />
       </div>
     );
   }
@@ -26,12 +31,14 @@ class SearchContainer extends Component {
 
 SearchContainer.propTypes = {
   suggestions: PropTypes.array.isRequired,
-  actions: PropTypes.object.isRequired
+  actions: PropTypes.object.isRequired,
+  query: PropTypes.string.isRequired,
+  suggestionBrowsingIndex: PropTypes.number,
 };
 
 function mapStateToProps(state, props) {
   return {
-    suggestions: state.search.suggestions,
+    ...state.search
   };
 }
 

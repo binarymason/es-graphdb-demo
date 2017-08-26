@@ -58,15 +58,28 @@ const receiveSearchSuggestions = json => {
   }
 }
 
-export const fetchSearchSuggestions = (query) => {
-
+export const fetchSearchSuggestions = ({query}) => {
   return (dispatch) => {
     dispatch({ type: types.FETCH_SEARCH_SUGGESTIONS, query })
 
-    performMovieSearch(query)
+    performMovieSearch({query})
       .then(
         json => dispatch(receiveSearchSuggestions(json)),
         error => console.error('An error occured.', error)
       )
+  }
+}
+
+export const browseSearchSuggestion = (indexDelta) => {
+  return {
+    type: types.BROWSE_SEARCH_SUGGESTION,
+    indexDelta
+  }
+}
+
+export const selectSearchSuggestion = (index) => {
+  return {
+    type: types.SELECT_SEARCH_SUGGESTION,
+    index
   }
 }
