@@ -19,13 +19,15 @@ class SearchInput extends Component {
   handleKeyDown(e) {
     if (!this.isAllowedKey(e)) return;
 
+    const currentIndex = this.props.suggestionBrowsingIndex;
+
     switch (e.key) {
       case 'ArrowDown':
-        return this.props.browseSearchSuggestion(1)
+        return this.props.browseSearchSuggestion(currentIndex + 1)
       case 'ArrowUp':
-        return this.props.browseSearchSuggestion(-1)
+        return this.props.browseSearchSuggestion(currentIndex -1)
       case 'Enter':
-        return this.props.selectSearchSuggestion(this.props.suggestionBrowsingIndex)
+        return this.props.selectSearchSuggestion(currentIndex)
       default:
     }
   }
@@ -45,6 +47,8 @@ class SearchInput extends Component {
         <SearchSuggestionList
           suggestions={this.props.suggestions}
           suggestionBrowsingIndex={this.props.suggestionBrowsingIndex}
+          browseSearchSuggestion={this.props.browseSearchSuggestion}
+          selectSearchSuggestion={this.props.selectSearchSuggestion}
         />
       </div>
     );

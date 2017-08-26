@@ -1,15 +1,20 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
 
-const Movie = ({person}) => {
+const imdbLink = title => {
+  const urlFriendly = title.split(' ').join('%20');
+  return `http://www.imdb.com/find?q=${urlFriendly}&s=tt&ttype=ft`
+}
+
+const Movie = (props) => {
   return (
     <div>
-      {person.lastname}, {person.firstname}
+      <p>{props.title} <a href={imdbLink(props.title)} target="_blank">View on IMDb</a></p>
     </div>
   );
 };
 
-Movie.propTypes = {
-  person: PropTypes.object.isRequired
-};
+Movie.defaultProps = {
+  title: '',
+}
 
 export default Movie;

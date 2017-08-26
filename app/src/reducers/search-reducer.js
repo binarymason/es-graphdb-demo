@@ -4,7 +4,7 @@ const INITIAL_STATE = {
   query: '',
   suggestions: [],
   suggestionBrowsingIndex: 0,
-  selectedMovie: {},
+  selectedMovie: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -24,7 +24,7 @@ export default (state = INITIAL_STATE, action) => {
     case types.BROWSE_SEARCH_SUGGESTION:
       return {
         ...state,
-        suggestionBrowsingIndex: state.suggestionBrowsingIndex + action.indexDelta
+        suggestionBrowsingIndex: action.index,
       }
     case types.SELECT_SEARCH_SUGGESTION:
       return {

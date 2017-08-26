@@ -70,10 +70,10 @@ export const fetchSearchSuggestions = ({query}) => {
   }
 }
 
-export const browseSearchSuggestion = (indexDelta) => {
+export const browseSearchSuggestion = (index) => {
   return {
     type: types.BROWSE_SEARCH_SUGGESTION,
-    indexDelta
+    index
   }
 }
 

@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as searchActions from '../actions/search-actions';
 import SearchInput from './SearchInput';
+import Movie from './Movie';
 
 class SearchContainer extends Component {
   // constructor(props) {
@@ -14,8 +15,14 @@ class SearchContainer extends Component {
   // }
 
   render() {
+    const selectedMovie = this.props.selectedMovie;
+
     return (
       <div>
+        <p className="App-intro">
+          To get started, find a movie that you like (1998 and earlier).
+        </p>
+        { selectedMovie && <Movie {...selectedMovie._source} /> }
         <SearchInput
           fetchSearchSuggestions={this.props.actions.fetchSearchSuggestions}
           browseSearchSuggestion={this.props.actions.browseSearchSuggestion}
