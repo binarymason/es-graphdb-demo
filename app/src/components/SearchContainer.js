@@ -17,7 +17,7 @@ class SearchContainer extends Component {
   render() {
     return (
       <div>
-        <SearchInput handleSearchInput={this.props.actions.handleSearchInput} />
+        <SearchInput fetchSearchSuggestions={this.props.actions.fetchSearchSuggestions} />
         <SearchSuggestionList suggestions={this.props.suggestions} />
       </div>
     );

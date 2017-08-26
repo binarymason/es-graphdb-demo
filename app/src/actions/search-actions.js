@@ -32,7 +32,18 @@ const checkHealth = () => {
 
 const ELASTICSEARCH_INDEX = 'neo4j-index-node';
 
-const performMovieSearch = body => {
+const performMovieSearch = ({query}) => {
+  const body = {
+    query: {
+      match_phrase_prefix: {
+        title: {
+          query,
+          slop: 10,
+        }
+      }
+    }
+  };
+
   return client.search({
     index: ELASTICSEARCH_INDEX,
     type: 'Movie',
@@ -47,13 +58,12 @@ const receiveSearchSuggestions = json => {
   }
 }
 
-export const handleSearchInput = (query) => {
-  const body = { query: { match_all: {} } };
+export const fetchSearchSuggestions = (query) => {
 
   return (dispatch) => {
-    dispatch({ type: types.ADD_SEARCH_INPUT, query })
+    dispatch({ type: types.FETCH_SEARCH_SUGGESTIONS, query })
 
-    performMovieSearch(body)
+    performMovieSearch(query)
       .then(
         json => dispatch(receiveSearchSuggestions(json)),
         error => console.error('An error occured.', error)

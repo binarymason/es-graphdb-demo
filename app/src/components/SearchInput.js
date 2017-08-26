@@ -9,9 +9,7 @@ class SearchInput extends Component {
 
   handleInput(e) {
     const query = e.target.value;
-    if (query.trim() === '') return;
-
-    this.props.handleSearchInput({ query });
+    this.props.fetchSearchSuggestions({ query });
   }
 
   componentDidMount() {
@@ -28,7 +26,7 @@ class SearchInput extends Component {
 }
 
 SearchInput.propTypes = {
-  handleSearchInput: PropTypes.func.isRequired
+  fetchSearchSuggestions: PropTypes.func.isRequired
 };
 
 export default SearchInput;
