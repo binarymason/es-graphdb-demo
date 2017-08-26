@@ -6,7 +6,7 @@ neo4j_import_dir=neo4j/data/import
 
 (
 cd $neo4j_import_dir || abort
-wget http://files.grouplens.org/datasets/movielens/ml-100k.zip ${neo4j_import_dir:?}/m1-100k.zip
+wget -O download.zip http://files.grouplens.org/datasets/movielens/ml-100k.zip
 echo "Unzipping..."
-unzip ml-100k.zip
+unzip download.zip
 )
