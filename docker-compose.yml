@@ -7,7 +7,8 @@ services:
     container_name: web_container
     volumes:
       - ./bin/wait.sh:/extension/wait.sh
-      - ./app/src:/usr/src/app/src
+      - ./app:/usr/src/app
+      - /usr/src/app/node_modules
     environment:
       - PORT=9000
       - EXTENSION_SCRIPT=/extension/wait.sh

@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 
-const Person = ({person}) => {
+const Movie = ({person}) => {
   return (
     <div>
       {person.lastname}, {person.firstname}
@@ -8,8 +8,8 @@ const Person = ({person}) => {
   );
 };
 
-Person.propTypes = {
+Movie.propTypes = {
   person: PropTypes.object.isRequired
 };
 
-export default Person;
+export default Movie;
