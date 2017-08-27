@@ -1,59 +1,55 @@
-// TODO: we can split this file into several files (pre-eject, post-eject, test)
-// and use those instead. This way we don't need to branch here.
+'use strict';
 
-var path = require('path');
+const path = require('path');
+const fs = require('fs');
+const url = require('url');
 
-// True after ejecting, false when used as a dependency
-var isEjected = (
-  path.resolve(path.join(__dirname, '..')) ===
-  path.resolve(process.cwd())
-);
+// Make sure any symlinks in the project folder are resolved:
+// https://github.com/facebookincubator/create-react-app/issues/637
+const appDirectory = fs.realpathSync(process.cwd());
+const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 
-// Are we developing create-react-app locally?
-var isInCreateReactAppSource = (
-  process.argv.some(arg => arg.indexOf('--debug-template') > -1)
-);
+const envPublicUrl = process.env.PUBLIC_URL;
 
-function resolveOwn(relativePath) {
-  return path.resolve(__dirname, relativePath);
+function ensureSlash(path, needsSlash) {
+  const hasSlash = path.endsWith('/');
+  if (hasSlash && !needsSlash) {
+    return path.substr(path, path.length - 1);
+  } else if (!hasSlash && needsSlash) {
+    return `${path}/`;
+  } else {
+    return path;
+  }
 }
 
-function resolveApp(relativePath) {
-  return path.resolve(relativePath);
+const getPublicUrl = appPackageJson =>
+  envPublicUrl || require(appPackageJson).homepage;
+
+// We use `PUBLIC_URL` environment variable or "homepage" field to infer
+// "public path" at which the app is served.
+// Webpack needs to know it to put the right <script> hrefs into HTML even in
+// single-page apps that may serve index.html for nested URLs like /todos/42.
+// We can't use a relative path in HTML because we don't want to load something
+// like /todos/42/static/js/bundle.7289d.js. We have to know the root.
+function getServedPath(appPackageJson) {
+  const publicUrl = getPublicUrl(appPackageJson);
+  const servedUrl =
+    envPublicUrl || (publicUrl ? url.parse(publicUrl).pathname : '/');
+  return ensureSlash(servedUrl, true);
 }
 
-if (isInCreateReactAppSource) {
-  // create-react-app development: we're in ./config/
-  module.exports = {
-    appBuild: resolveOwn('../build'),
-    appHtml: resolveOwn('../template/index.html'),
-    appFavicon: resolveOwn('../template/favicon.ico'),
-    appPackageJson: resolveOwn('../package.json'),
-    appSrc: resolveOwn('../template/src'),
-    appNodeModules: resolveOwn('../node_modules'),
-    ownNodeModules: resolveOwn('../node_modules')
-  };
-} else if (!isEjected) {
-  // before eject: we're in ./node_modules/react-scripts/config/
-  module.exports = {
-    appBuild: resolveApp('build'),
-    appHtml: resolveApp('index.html'),
-    appFavicon: resolveApp('favicon.ico'),
-    appPackageJson: resolveApp('package.json'),
-    appSrc: resolveApp('src'),
-    appNodeModules: resolveApp('node_modules'),
-    // this is empty with npm3 but node resolution searches higher anyway:
-    ownNodeModules: resolveOwn('../node_modules')
-  };
-} else {
-  // after eject: we're in ./config/
-  module.exports = {
-    appBuild: resolveApp('build'),
-    appHtml: resolveApp('index.html'),
-    appFavicon: resolveApp('favicon.ico'),
-    appPackageJson: resolveApp('package.json'),
-    appSrc: resolveApp('src'),
-    appNodeModules: resolveApp('node_modules'),
-    ownNodeModules: resolveApp('node_modules')
-  };
-}
+// config after eject: we're in ./config/
+module.exports = {
+  dotenv: resolveApp('.env'),
+  appBuild: resolveApp('build'),
+  appPublic: resolveApp('public'),
+  appHtml: resolveApp('public/index.html'),
+  appIndexJs: resolveApp('src/index.js'),
+  appPackageJson: resolveApp('package.json'),
+  appSrc: resolveApp('src'),
+  yarnLockFile: resolveApp('yarn.lock'),
+  testsSetup: resolveApp('src/setupTests.js'),
+  appNodeModules: resolveApp('node_modules'),
+  publicUrl: getPublicUrl(resolveApp('package.json')),
+  servedPath: getServedPath(resolveApp('package.json')),
+};

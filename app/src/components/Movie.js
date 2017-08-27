@@ -7,15 +7,14 @@ const urlEncode = (str, delimeter = '+') => {
 }
 
 const googleImgEndpoint = query => {
-  console.log(process.env)
   const cx = process.env.REACT_APP_GOOGLE_CX;
   const key = process.env.REACT_APP_GOOGLE_API_KEY;
-  const q = urlEncode(query);
+  const q = urlEncode(`${query} Movie Poster`);
 
   if (!cx) return console.error('missing google cx!');
   if (!key) return console.error('missing google api key!');
 
-  return  `${GOOGLE_IMG_ENDPOINT}?q=${q}&cx=${cx}=eng&imgType=photo&num=1&searchType=image&key=${key}`
+  return  `${GOOGLE_IMG_ENDPOINT}?q=${q}&cx=${cx}&imgSize=medium&imgType=photo&num=1&searchType=image&key=${key}`
 }
 
 const imdbLink = (title) => {
@@ -25,17 +24,24 @@ const imdbLink = (title) => {
 
 
 class Movie extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { movieImg: '#' }
+
+  }
   componentDidMount() {
     fetch(googleImgEndpoint(this.props.title))
-      .then(data => console.log(data))
+      .then(res => res.json())
+      .then(json => {
+        this.setState({movieImg: json.items[0].link});
+      })
   }
-
 
 
   render() {
     return (
       <div>
-        {Object.keys(process.env).map(k => <p>{k}</p>)}
+        <img src={this.state.movieImg} alt="cover"/>
       <p>{this.props.title} <a href={imdbLink(this.props.title)} target="_blank">View on IMDb</a></p>
     </div>
     );
