@@ -18,7 +18,8 @@ const googleImgEndpoint = query => {
 }
 
 const imdbLink = (title) => {
-  const urlFriendly = urlEncode(title, '%20')
+  const withoutParens = title.replace(/\s\(.*\)/, '');
+  const urlFriendly = urlEncode(withoutParens, '%20');
   return `http://www.imdb.com/find?q=${urlFriendly}&s=tt&ttype=ft`
 }
 
@@ -37,12 +38,15 @@ class Movie extends Component {
       })
   }
 
-
   render() {
+    const link = imdbLink(this.props.title);
+
     return (
       <div>
-        <img src={this.state.movieImg} alt="cover"/>
-      <p>{this.props.title} <a href={imdbLink(this.props.title)} target="_blank">View on IMDb</a></p>
+        <a href={link} target="_blank">
+          <img src={this.state.movieImg} alt="cover"/>
+        </a>
+      <p>{this.props.title} <a href={link} target="_blank">View on IMDb</a></p>
     </div>
     );
   }
