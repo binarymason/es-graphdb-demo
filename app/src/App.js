@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import SearchContainer from './components/SearchContainer';
-
+console.log(process.env)
 class App extends Component {
   render() {
     return (

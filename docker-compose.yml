@@ -12,8 +12,12 @@ services:
     environment:
       - PORT=9000
       - EXTENSION_SCRIPT=/extension/wait.sh
-    links:
-      - elasticsearch
+
+      # Source .env within docker environment
+      # https://goo.gl/8m8iwk
+      - CHOKIDAR_USEPOLLING=true
+    env_file:
+      - ./app/.env
     ports:
       - "9000:9000"
   neo4j:
