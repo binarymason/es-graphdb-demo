@@ -1,6 +1,7 @@
 import * as types from './action-types';
 import elasticsearch from 'elasticsearch';
 import AgentKeepAlive from 'agentkeepalive';
+import urlEncode from '../common';
 
 // running clientside, so do not have docker networking
 const ELASTICSEARCH_HOST = 'localhost:9200'
@@ -77,9 +78,38 @@ export const browseSearchSuggestion = (index) => {
   }
 }
 
-export const selectSearchSuggestion = (index) => {
-  return {
-    type: types.SELECT_SEARCH_SUGGESTION,
-    index
+
+const GOOGLE_IMG_ENDPOINT = 'https://www.googleapis.com/customsearch/v1';
+
+const googleImgEndpoint = query => {
+  const cx = process.env.REACT_APP_GOOGLE_CX;
+  const key = process.env.REACT_APP_GOOGLE_API_KEY;
+  const q = urlEncode(`${query} Movie Poster`);
+
+  if (!cx) return console.error('missing google cx!');
+  if (!key) return console.error('missing google api key!');
+
+  return  `${GOOGLE_IMG_ENDPOINT}?q=${q}&cx=${cx}&imgSize=medium&imgType=photo&num=1&searchType=image&key=${key}`
+}
+
+export const selectSearchSuggestion = () => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { suggestionBrowsingIndex, suggestions } = state.search;
+    const selectedMovie = suggestions[suggestionBrowsingIndex];
+
+    dispatch({
+      type: types.SELECT_SEARCH_SUGGESTION,
+      selection: selectedMovie,
+    })
+
+    fetch(googleImgEndpoint(selectedMovie._source.title))
+      .then(res => res.json())
+      .then(json => {
+        dispatch({
+          type: types.RECEIVE_GOOGLE_IMAGE,
+          img: json.items[0].link
+        })
+      })
   }
 }

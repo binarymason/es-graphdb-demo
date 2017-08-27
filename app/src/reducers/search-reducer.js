@@ -29,9 +29,17 @@ export default (state = INITIAL_STATE, action) => {
     case types.SELECT_SEARCH_SUGGESTION:
       return {
         ...state,
-        selectedMovie: state.suggestions[action.index],
+        selectedMovie: action.selection,
         query: '',
         suggestions: [],
+      }
+    case types.RECEIVE_GOOGLE_IMAGE:
+      return {
+        ...state,
+        selectedMovie: {
+          ...state.selectedMovie,
+          _source: { ...state.selectedMovie._source, img: action.img, }
+        }
       }
     default:
       return state;

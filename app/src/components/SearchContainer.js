@@ -24,7 +24,7 @@ class SearchContainer extends Component {
         <p className="App-intro">
           To get started, find a movie that you like (1998 and earlier).
         </p>
-        { selectedMovie && <Movie {...selectedMovie._source } imgSrc='TODO' /> }
+        { selectedMovie && <Movie {...selectedMovie._source } /> }
         <SearchInput
           fetchSearchSuggestions={this.props.actions.fetchSearchSuggestions}
           browseSearchSuggestion={this.props.actions.browseSearchSuggestion}
