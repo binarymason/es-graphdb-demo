@@ -1,4 +1,4 @@
-neo4j/data
+neo4j/data/import/*
 node_modules
 tmp
 .env
