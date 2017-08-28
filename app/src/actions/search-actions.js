@@ -121,6 +121,8 @@ export const selectSearchSuggestion = () => {
       selection: selectedMovie,
     })
 
+    if (!selectedMovie) return;
+
     fetch(googleImgEndpoint(selectedMovie._source.title))
       .then(res => res.json())
       .then(json => {

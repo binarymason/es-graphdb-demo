@@ -5,8 +5,6 @@ import {bindActionCreators} from 'redux';
 import * as searchActions from '../actions/search-actions';
 import SearchInput from './SearchInput';
 import Movie from './Movie';
-import PIIForm from './PIIForm';
-import RelatedMoviesList from './RelatedMoviesList';
 
 
 class SearchContainer extends Component {
@@ -37,13 +35,7 @@ class SearchContainer extends Component {
 
     return (
       <div>
-        <p className="App-intro">
-          To get started, select your gender.
-        </p>
-
-        <PIIForm handleGenderChange={this.handleGenderChange}/>
-        <br />
-        <p className="App-intro">Then find a movie that you like (1998 and earlier).</p>
+        <p className="App-intro">Search for a movie (1998 and earlier).</p>
         <SearchInput
           fetchSearchSuggestions={this.props.actions.fetchSearchSuggestions}
           browseSearchSuggestion={this.props.actions.browseSearchSuggestion}
@@ -54,10 +46,6 @@ class SearchContainer extends Component {
         />
         <br />
         { selectedMovie && <Movie {...selectedMovie._source } /> }
-        <RelatedMoviesList movies={this.props.relatedMovies} />
-
-        <br />
-        <button type="button" onClick={this.handleButtonClick}>Search</button>
       </div>
     );
   }
