@@ -1,5 +1,9 @@
 # ElasticSearch and Neo4j Demo
 
+## Setup
+1) Copy `./app/.env.sample` to `./app/.env` (required)
+2) Fill in environment variables in `./app/.env` if you want google image lookup to work (optional)
+
 ## Importing data
 
 Download data
