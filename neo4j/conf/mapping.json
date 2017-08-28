@@ -1,0 +1,24 @@
+{
+  "defaults": {
+    "key_property": "id",
+    "nodes_index": "neo4j-index-node",
+    "relationships_index": "neo4j-index-relationship",
+    "include_remaining_properties": true
+  },
+  "node_mappings": [
+    {
+      "condition": "hasLabel('User')",
+      "type": "users"
+    },
+    {
+      "condition": "hasLabel('Movie')",
+      "type": "movies"
+    }
+  ],
+  "relationship_mappings": [
+    {
+      "condition": "allRelationships()",
+      "type": "relationships"
+    }
+  ]
+}

@@ -35,7 +35,7 @@ USING PERIODIC COMMIT 500
 LOAD CSV FROM "file:///data/import/ml-100k/u.data" AS line FIELDTERMINATOR '\t'
 MATCH (u:User {objectId: toInt(line[1])})
 MATCH (p:Movie {objectId: toInt(line[0])})
-CREATE UNIQUE (u)-[:LIKES {rate: ROUND(toFloat(line[2])), timestamp: line[3]}]->(p);
+CREATE UNIQUE (u)-[:LIKES {user_age: u.age, user_gender: u.gender, user_id: u.id, user_occupation: u.occupation, movie_title: p.title, movie_id: p.id, rate: ROUND(toFloat(line[2])), timestamp: line[3]}]->(p);
 ```
 
 

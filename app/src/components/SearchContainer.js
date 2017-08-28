@@ -5,18 +5,45 @@ import {bindActionCreators} from 'redux';
 import * as searchActions from '../actions/search-actions';
 import SearchInput from './SearchInput';
 import Movie from './Movie';
+import PIIForm from './PIIForm';
+import RelatedMoviesList from './RelatedMoviesList';
 
 
 class SearchContainer extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleGenderChange = this.handleGenderChange.bind(this);
+    this.handleButtonClick = this.handleButtonClick.bind(this);
+  }
+
+  handleGenderChange(e) {
+    const gender = e.target.value;
+    if (! ['m', 'f'].includes(gender)) return;
+    this.props.actions.genderChange(gender);
+  }
+
+  handleButtonClick() {
+    const { selectedMovie, gender } = this.props;
+    if (!gender) return alert('select a gender first');
+    if (!selectedMovie) return alert('select a movie first');
+
+    const movieTitle = selectedMovie._source.title;
+    this.props.actions.performRelatedMovieSearch({gender, movieTitle})
+  }
+
   render() {
     const selectedMovie = this.props.selectedMovie;
 
     return (
       <div>
         <p className="App-intro">
-          To get started, find a movie that you like (1998 and earlier).
+          To get started, select your gender.
         </p>
-        { selectedMovie && <Movie {...selectedMovie._source } /> }
+
+        <PIIForm handleGenderChange={this.handleGenderChange}/>
+        <br />
+        <p className="App-intro">Then find a movie that you like (1998 and earlier).</p>
         <SearchInput
           fetchSearchSuggestions={this.props.actions.fetchSearchSuggestions}
           browseSearchSuggestion={this.props.actions.browseSearchSuggestion}
@@ -25,6 +52,12 @@ class SearchContainer extends Component {
           suggestionBrowsingIndex={this.props.suggestionBrowsingIndex}
           query={this.props.query}
         />
+        <br />
+        { selectedMovie && <Movie {...selectedMovie._source } /> }
+        <RelatedMoviesList movies={this.props.relatedMovies} />
+
+        <br />
+        <button type="button" onClick={this.handleButtonClick}>Search</button>
       </div>
     );
   }

@@ -8,6 +8,11 @@ const imdbLink = (title) => {
 }
 
 
+const renderLoading = (loading = 'loading') => {
+  if (loading === 'none') return (<div></div>);
+  return (<p>loading image...</p>);
+}
+
 const Movie = (props) => {
   const link = imdbLink(props.title);
 
@@ -19,7 +24,7 @@ const Movie = (props) => {
             <img src={props.img} alt="cover"/>
           </a>
         ) : (
-        <p>loading image...</p>
+          renderLoading(props.loading)
         )
       }
       <p>{props.title} <a href={link} target="_blank">View on IMDb</a></p>
