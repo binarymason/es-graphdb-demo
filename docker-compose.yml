@@ -6,12 +6,10 @@ services:
       dockerfile: Dockerfile
     container_name: web_container
     volumes:
-      - ./bin/wait.sh:/extension/wait.sh
       - ./app:/usr/src/app
       - /usr/src/app/node_modules
     environment:
       - PORT=9000
-      - EXTENSION_SCRIPT=/extension/wait.sh
 
       # Source .env within docker environment
       # https://goo.gl/8m8iwk

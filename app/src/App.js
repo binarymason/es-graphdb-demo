@@ -9,7 +9,7 @@ class App extends Component {
       <div className="App">
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h2>Movie Recommender</h2>
+          <h2>Index of ElasticSearch Movies</h2>
         </div>
         <SearchContainer />
       </div>

@@ -32,7 +32,6 @@ const checkHealth = () => {
 }
 
 const ELASTICSEARCH_INDEX = 'neo4j-index-node';
-const RELATIONSHIPS_INDEX = 'neo4j-index-relationship';
 
 const performMovieSearch = ({query}) => {
   const body = {
@@ -57,23 +56,6 @@ const receiveSearchSuggestions = json => {
   return {
     type: types.RECEIVE_SEARCH_SUGGESTIONS,
     suggestions: json.hits.hits,
-  }
-}
-
-const receiveRelatedMovies = json => {
-  const connections = json.connections;
-  const prospects = connections.map(el => json.vertices[el.target]);
-  const nonUnique = prospects.filter(el => (
-    el.field === 'movie_title.keyword'
-  )).sort((a,b) => a.weight + b.weight)
-
-  const relatedMovies = Array.from(new Set(nonUnique)).map(el => {
-    return { _source: { title: el.term }, weight: el.weight }
-  })
-
-  return {
-    type: types.RECEIVE_RELATED_MOVIES,
-    relatedMovies,
   }
 }
 
@@ -121,6 +103,8 @@ export const selectSearchSuggestion = () => {
       selection: selectedMovie,
     })
 
+    if (!selectedMovie) return;
+
     fetch(googleImgEndpoint(selectedMovie._source.title))
       .then(res => res.json())
       .then(json => {
@@ -130,97 +114,4 @@ export const selectSearchSuggestion = () => {
         })
       })
   }
-}
-
-const relatedMovieQuery = ({movieTitle, gender}) => {
-  const oppositeGender = gender.toLowerCase() === 'm' ? 'F' : 'M';
-
-  return {
-    "query": {
-      "bool": {
-        "must_not": [
-          {
-            "term": {
-              "movie_title": movieTitle
-            }
-          },
-          {
-            "term": {
-              "user_gender.keyword": oppositeGender
-            }
-          }
-        ]
-      }
-    },
-    "controls": {
-      "use_significance": false,
-      "sample_size": 2000,
-      "timeout": 5000
-    },
-    "connections": {
-      "vertices": [
-        {
-          "field": "movie_title.keyword",
-          "size": 5,
-          "min_doc_count": 3,
-          "exclude": [
-            movieTitle
-          ]
-        },
-        {
-          "field": "user_gender.keyword",
-          "size": 5,
-          "min_doc_count": 3,
-          "exclude": [
-            oppositeGender
-          ]
-        }
-      ]
-    },
-    "vertices": [
-      {
-        "field": "movie_title.keyword",
-        "size": 5,
-        "min_doc_count": 3,
-        "exclude": [
-          movieTitle
-        ]
-      },
-      {
-        "field": "user_gender.keyword",
-        "size": 5,
-        "min_doc_count": 3,
-        "exclude": [
-          oppositeGender
-        ]
-      }
-    ]
-  }
-}
-
-
-const RELATIONSHIP_ENDPOINT = `http://${ELASTICSEARCH_HOST}/${RELATIONSHIPS_INDEX}/_xpack/_graph/_explore`
-
-export const performRelatedMovieSearch = ({movieTitle, gender}) => {
-  return (dispatch) => {
-    const body = relatedMovieQuery({ movieTitle, gender })
-
-    dispatch({ type: types.FETCH_RELATED_MOVIES });
-
-    const requestConfig = {
-      method: 'POST',
-      body: JSON.stringify(body),
-    };
-
-    fetch(RELATIONSHIP_ENDPOINT, requestConfig)
-      .then(res => res.json())
-      .then(
-        json => dispatch(receiveRelatedMovies(json)),
-        error => console.error('An error occured.', error)
-      )
-  }
-}
-
-export const genderChange = gender => {
-  return { type: types.GENDER_CHANGE, gender };
 }

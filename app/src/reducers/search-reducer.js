@@ -5,7 +5,6 @@ const INITIAL_STATE = {
   suggestions: [],
   suggestionBrowsingIndex: 0,
   selectedMovie: null,
-  gender: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -41,16 +40,6 @@ export default (state = INITIAL_STATE, action) => {
           ...state.selectedMovie,
           _source: { ...state.selectedMovie._source, img: action.img, }
         }
-      }
-    case types.GENDER_CHANGE:
-      return {
-        ...state,
-        gender: action.gender,
-      }
-    case types.RECEIVE_RELATED_MOVIES:
-      return {
-        ...state,
-        relatedMovies: action.relatedMovies,
       }
     default:
       return state;
